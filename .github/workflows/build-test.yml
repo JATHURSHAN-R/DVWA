@@ -1,0 +1,35 @@
+name: Build and Smoke Test
+on: [push, pull_request]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build images
+        run: docker compose build
+
+      - name: Start the stack
+        run: docker compose up -d
+
+      - name: Wait for app to respond
+        run: |
+          for i in {1..30}; do
+            if curl -sf http://localhost:4280/setup.php > /dev/null; then
+              echo "App responded after $((i*2))s"
+              exit 0
+            fi
+            echo "Waiting for app... attempt $i/30"
+            sleep 2
+          done
+          echo "App never became ready within 60s"
+          exit 1
+
+      - name: Dump container logs on failure
+        if: failure()
+        run: docker compose logs
+
+      - name: Tear down
+        if: always()
+        run: docker compose down
