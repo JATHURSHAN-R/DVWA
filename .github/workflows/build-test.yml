@@ -7,6 +7,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Write .env from secrets
+        run: |
+          echo "DB_DATABASE=dvwa" >> .env
+          echo "DB_USER=dvwa" >> .env
+          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+          echo "MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}" >> .env
+
       - name: Build images
         run: docker compose build
 

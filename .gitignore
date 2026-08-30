@@ -16,3 +16,6 @@ tests/__pycache__/
 hackable/uploads/*
 .DS_Store
 .DS_Store
+
+#local environment variable
+.env
