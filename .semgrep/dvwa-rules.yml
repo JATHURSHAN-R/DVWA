@@ -1,0 +1,39 @@
+rules:
+  - id: sqli-unparameterized-query
+    languages: [php]
+    severity: ERROR
+    message: "SQL query executed via mysqli_query() using a variable built from string interpolation, instead of a parameterised/prepared statement."
+    patterns:
+      - pattern: mysqli_query($CONN, $QUERY)
+      - pattern-not: mysqli_stmt_execute(...)
+
+  - id: predictable-session-cookie
+    languages: [php]
+    severity: WARNING
+    message: "Cookie value is derived from a simple incrementing counter, making it predictable. Use a cryptographically random token (e.g. random_bytes()) instead."
+    patterns:
+      - pattern: |
+          $SESS[$KEY]++;
+          ...
+          setcookie($NAME, ...);
+
+  - id: unrestricted-file-upload
+    languages: [php]
+    severity: ERROR
+    message: "File is saved via move_uploaded_file() without any prior validation of its actual content/type."
+    mode: taint
+    pattern-sources:
+      - pattern: $_FILES[...]
+    pattern-sinks:
+      - pattern: move_uploaded_file(...)
+    pattern-sanitizers:
+      - pattern: getimagesize(...)
+      - pattern: finfo_file(...)
+
+  - id: missing-output-encoding
+    languages: [php]
+    severity: ERROR
+    message: "Database row value assigned without htmlspecialchars() encoding before being used in HTML output — allows stored XSS."
+    patterns:
+      - pattern: $VAR = $ROW[$IDX];
+      - pattern-not: $VAR = htmlspecialchars(...);
