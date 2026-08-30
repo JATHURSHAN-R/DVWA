@@ -1,0 +1,35 @@
+                   
+                   
+┌─────────────────┐
+│ 6 Code Findings │
+└─────────────────┘
+                                                 
+  [36m[22m[24m  dvwa/includes/dvwaPage.inc.php[0m
+   ❯❯❱ semgrep.sqli-unparameterized-query
+          [31m[1m[24m❰❰ Blocking ❱❱[0m
+          SQL query executed via mysqli_query() using a variable built from string interpolation, instead of a
+          parameterised/prepared statement.                                                                   
+                                                                                                              
+          571┆ || !@((bool)mysqli_query($GLOBALS["___mysqli_ston"], "USE " . $_DVWA[ 'db_database' ])) ) {
+            ⋮┆----------------------------------------
+          612┆ $result = mysqli_query($GLOBALS["___mysqli_ston"],  $query );
+                                                      
+  [36m[22m[24m  vulnerabilities/sqli/source/low.php[0m
+   ❯❯❱ semgrep.missing-output-encoding
+          [31m[1m[24m❰❰ Blocking ❱❱[0m
+          Database row value assigned without htmlspecialchars() encoding before being used in HTML output —
+          allows stored XSS.                                                                                
+                                                                                                            
+            4┆ $id = $_REQUEST[ 'id' ];
+            ⋮┆----------------------------------------
+           13┆ $first = $row["first_name"];
+            ⋮┆----------------------------------------
+           14┆ $last  = $row["last_name"];
+                                                        
+  [36m[22m[24m  vulnerabilities/upload/source/low.php[0m
+   ❯❯❱ semgrep.unrestricted-file-upload
+          [31m[1m[24m❰❰ Blocking ❱❱[0m
+          File is saved via move_uploaded_file() without any prior validation of its actual content/type.
+                                                                                                         
+           13┆ elseif( !move_uploaded_file( $_FILES[ 'uploaded' ][ 'tmp_name' ], $target_path ) ) {
+

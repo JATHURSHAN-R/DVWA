@@ -1,0 +1,79 @@
+                    
+                    
+┌──────────────────┐
+│ 13 Code Findings │
+└──────────────────┘
+                                                                
+  [36m[22m[24m  /home/kali/dvwa-before-files/dvwaPage.inc.php[0m
+   ❯❯❱ semgrep.sqli-unparameterized-query
+          [31m[1m[24m❰❰ Blocking ❱❱[0m
+          SQL query executed via mysqli_query() using a variable built from string interpolation, instead of a
+          parameterised/prepared statement.                                                                   
+                                                                                                              
+          571┆ || !@((bool)mysqli_query($GLOBALS["___mysqli_ston"], "USE " . $_DVWA[ 'db_database' ])) ) {
+            ⋮┆----------------------------------------
+          612┆ $result = mysqli_query($GLOBALS["___mysqli_ston"],  $query );
+   
+   ❯❯❱ semgrep.missing-output-encoding
+          [31m[1m[24m❰❰ Blocking ❱❱[0m
+          Database row value assigned without htmlspecialchars() encoding before being used in HTML output —
+          allows stored XSS.                                                                                
+                                                                                                            
+          622┆ $name    = $row[0];
+            ⋮┆----------------------------------------
+          623┆ $comment = $row[1];
+                                                            
+  [36m[22m[24m  /home/kali/dvwa-before-files/sqli-low.php[0m
+   ❯❯❱ semgrep.missing-output-encoding
+          [31m[1m[24m❰❰ Blocking ❱❱[0m
+          Database row value assigned without htmlspecialchars() encoding before being used in HTML output —
+          allows stored XSS.                                                                                
+                                                                                                            
+            5┆ $id = $_REQUEST[ 'id' ];
+   
+   ❯❯❱ semgrep.sqli-unparameterized-query
+          [31m[1m[24m❰❰ Blocking ❱❱[0m
+          SQL query executed via mysqli_query() using a variable built from string interpolation, instead of a
+          parameterised/prepared statement.                                                                   
+                                                                                                              
+           11┆ $result = mysqli_query($GLOBALS["___mysqli_ston"],  $query ) or die( '<pre>' .       
+               ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) :
+               (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . '</pre>' );  
+   
+   ❯❯❱ semgrep.missing-output-encoding
+          [31m[1m[24m❰❰ Blocking ❱❱[0m
+          Database row value assigned without htmlspecialchars() encoding before being used in HTML output —
+          allows stored XSS.                                                                                
+                                                                                                            
+           16┆ $first = $row["first_name"];
+            ⋮┆----------------------------------------
+           17┆ $last  = $row["last_name"];
+            ⋮┆----------------------------------------
+           43┆ $first = $row["first_name"];
+            ⋮┆----------------------------------------
+           44┆ $last  = $row["last_name"];
+                                                              
+  [36m[22m[24m  /home/kali/dvwa-before-files/upload-low.php[0m
+   ❯❯❱ semgrep.unrestricted-file-upload
+          [31m[1m[24m❰❰ Blocking ❱❱[0m
+          File is saved via move_uploaded_file() without any prior validation of its actual content/type.
+                                                                                                         
+            9┆ if( !move_uploaded_file( $_FILES[ 'uploaded' ][ 'tmp_name' ], $target_path ) ) {
+                                                               
+  [36m[22m[24m  /home/kali/dvwa-before-files/weak-id-low.php[0m
+    ❯❱ semgrep.predictable-session-cookie
+          [31m[1m[24m❰❰ Blocking ❱❱[0m
+          Cookie value is derived from a simple incrementing counter, making it predictable. Use a
+          cryptographically random token (e.g. random_bytes()) instead.                           
+                                                                                                  
+            9┆ $_SESSION['last_session_id']++;
+           10┆ $cookie_value = $_SESSION['last_session_id'];
+           11┆ setcookie("dvwaSession", $cookie_value);
+   
+   ❯❯❱ semgrep.missing-output-encoding
+          [31m[1m[24m❰❰ Blocking ❱❱[0m
+          Database row value assigned without htmlspecialchars() encoding before being used in HTML output —
+          allows stored XSS.                                                                                
+                                                                                                            
+           10┆ $cookie_value = $_SESSION['last_session_id'];
+
