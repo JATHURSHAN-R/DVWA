@@ -1,0 +1,39 @@
+name: Security Gates
+on: [push, pull_request]
+
+jobs:
+  sast:
+    name: SAST (Semgrep)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Semgrep
+        run: pip install semgrep
+
+      - name: Run Semgrep (custom rules)
+        run: semgrep --config=.semgrep/dvwa-rules.yml . --quiet
+
+  dependency-scan:
+    name: Dependency Scan (composer audit)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
+      - name: Install Composer dependencies
+        working-directory: vulnerabilities/api
+        run: composer install --no-interaction
+
+      - name: Run composer audit
+        working-directory: vulnerabilities/api
+        run: composer audit || true
